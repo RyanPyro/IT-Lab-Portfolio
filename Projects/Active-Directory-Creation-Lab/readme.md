@@ -1,4 +1,4 @@
-# Active Directory Virtualbox Lab
+# Active Directory Home Lab using Oracle Virtualbox
 
 ## Objectives
 - Deploy a Windows Server virtual machine.
