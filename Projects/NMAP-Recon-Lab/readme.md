@@ -22,7 +22,8 @@ Initial connectivity tests showed asymmetric behavior:
 
 **Remediation:** An inbound firewall rule was explicitly enabled on the Windows target to allow ICMPv4 Echo Requests, establishing a reliable baseline for testing.
 
-![Ping Working Image](images/nmap-13.png)
+![Ping Working Image](Nmap-Recon-Lab
+/images/nmap-13.png)
 
 ### 2. Defensive Host Discovery (Firewall Enabled)
 With the Windows Firewall active, an initial host discovery scan was performed using the `-sn` flag (ping scanning without port probing).
