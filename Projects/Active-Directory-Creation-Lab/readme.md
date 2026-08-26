@@ -124,7 +124,7 @@ Opened **Group Policy Management** to configure GPOs. Learned the two main setti
 - **Computer Configuration** — applies to the local machine regardless of who logs in 
 - **User Configuration** — applies based on the logged-in user
 
-...and within each, the distinction between:
+ within each of those section there are further distinctions between:
 
 - **Policies** — enforced, can't be changed by users (e.g., password policies, account lockout policies)
 - **Preferences** — configured defaults users *can* change (e.g., mapped network drives, printers, desktop shortcuts)
@@ -142,7 +142,6 @@ Configured it with:
 - Minimum password length: **12 characters**
 - Password must meet complexity requirements: **Enabled**
 
-![Password Policy GPO after configuration](screenshots/15-password-policy-gpo-configured.png)
 
 ### GPO 2 — Drive Mapping
 
