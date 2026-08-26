@@ -58,7 +58,6 @@ Set up an AD domain from scratch:
 
 **5. Verified the install** via the Windows Administrative Tools menu, confirming Active Directory Users and Computers, Sites and Services, Domains and Trusts, etc. were all present.
 
-![Windows Administrative Tools menu showing AD management consoles](screenshots/06-administrative-tools-menu.png)
 
 ---
 
@@ -66,21 +65,17 @@ Set up an AD domain from scratch:
 
 Opened **Active Directory Users and Computers** to confirm the new `Ryan.local` domain, then began building out OUs.
 
-![AD Users and Computers showing the new Ryan.local domain](screenshots/07-adcu-empty-domain.png)
-
 Created new OUs from the right-click context menu:
-
-![Creating a new Organizational Unit](screenshots/08-adcu-new-ou-menu.png)
 
 **Result:** three top-level OUs — **USA**, **Germany**, and **Iceland** — each with its own **Server** and **Users** sub-OU, modeling a company with regional offices.
 
-![Final OU tree: USA, Germany, Iceland, each with Server and Users sub-OUs](screenshots/09-adcu-ou-structure.png)
+![Final OU tree: USA, Germany, Iceland, each with Server and Users sub-OUs](Images/Making_OU.png)
 
 ---
 
 ## Part 3 — Security Groups & Group Scope
 
-Before creating groups, I dug into how AD group **scope** governs *membership* (who can be added) versus *usage* (where the group can be granted permissions).
+Before creating groups, I researched into how AD group **scope** governs *membership* (who can be added) versus *usage* (where the group can be granted permissions).
 
 | Scope | Membership | Usage |
 |---|---|---|
@@ -97,40 +92,36 @@ The standard best-practice pattern for assigning permissions:
 
 1. **A**ccounts → add user accounts to **G**lobal security groups based on role (e.g., *Marketing Team*, *Finance Department*)
 2. **G**lobal groups → nest them inside **D**omain **L**ocal groups that represent specific resources (e.g., *Shared Drive Access*, *Payroll System*)
-3. **D**omain Local → assign **P**ermissions to the domain local group
+3. **D**omain Local → assign **P**ermissions to the domain local group 
 
 ### When Universal groups earn their place: AGUDLP
 
 Universal groups solve the one case Global and Domain Local can't handle alone: needing **both** wide membership **and** wide usage. Example — building an "all IT staff, company-wide" group in a multi-domain forest:
 
-1. Create a **Global** group in each domain (`USA\IT`, `Germany\IT`, `Iceland\IT`) — one per domain, since Global groups can't pull members across domains.
+1. Created a **Global** group in each domain (`USA\IT`, `Germany\IT`, `Iceland\IT`) — one per domain, since Global groups can't pull members across domains.
 2. Nest all three Global groups inside one **Universal** group (`AllIT`) — legal because Universal groups accept members from any domain in the forest.
 3. Nest that Universal group into **Domain Local** groups wherever the actual resources live, and assign permissions there.
 
-This extends AGDLP into **AGUDLP**: Accounts → Global → Universal → Domain Local → Permissions. The Universal group is the "bridge" that merges multiple domains' Global groups into one manageable unit. (This also comes up with mail-enabled/distribution groups — Exchange generally wants distribution groups to be Universal scope, since membership needs to be visible from every domain/site for mail routing.)
-
-![Group Type diagram — security groups for user rights vs. resource permissions](screenshots/10-group-type-diagram.png)
+This extends AGDLP into **AGUDLP**: Accounts → Global → Universal → Domain Local → Permissions. The Universal group is the "bridge" that combines multiple domains' Global groups into one unit. (This also comes up with mail-enabled/distribution groups — Exchange generally wants distribution groups to be Universal scope, since membership needs to be visible from every domain/site for mail routing.)
 
 ### Group types: Security vs. Distribution
 
 - **Security groups** — assign user rights and permissions to shared resources (folders, printers, etc.). Includes built-in groups (e.g., *Domain Admins*, *Remote Desktop Users*) and custom groups (e.g., *Finance*, *HR*).
 - **Distribution groups** — used to build email distribution lists (all employees, by department, or by role). Not used for permissions.
 
-![Distribution groups diagram](screenshots/11-distribution-groups-diagram.png)
-
 ### Groups created
 
 Built three Global security groups — **IT**, **HR**, and **Finance** — under the Users container.
 
-![IT, HR, and Finance security groups in AD Users and Computers](screenshots/12-adcu-security-groups.png)
+![IT, HR, and Finance security groups in AD Users and Computers](Images/Adding_IT_and_More.png)
 
 ---
 
 ## Part 4 — Group Policy Management
 
-Opened **Group Policy Management** to configure GPOs. Learned the two settings axes:
+Opened **Group Policy Management** to configure GPOs. Learned the two main settings:
 
-- **Computer Configuration** — applies to the local machine regardless of who logs in
+- **Computer Configuration** — applies to the local machine regardless of who logs in 
 - **User Configuration** — applies based on the logged-in user
 
 ...and within each, the distinction between:
@@ -138,13 +129,12 @@ Opened **Group Policy Management** to configure GPOs. Learned the two settings a
 - **Policies** — enforced, can't be changed by users (e.g., password policies, account lockout policies)
 - **Preferences** — configured defaults users *can* change (e.g., mapped network drives, printers, desktop shortcuts)
 
-![Types of Group Policy settings: Computer/User Configuration x Policies/Preferences](screenshots/13-gpo-settings-types-diagram.png)
 
 ### GPO 1 — Password Policy
 
 Created a **Password Policy** GPO under Computer Configuration → Policies → Account Policies → Password Policy (all settings start as "Not Defined"):
 
-![Password Policy GPO before configuration — all settings Not Defined](screenshots/14-password-policy-gpo-default.png)
+![Password Policy GPO before configuration — all settings Not Defined](Images/passwordpolicy.png)
 
 Configured it with:
 - Maximum password age: **120 days**
@@ -158,19 +148,19 @@ Configured it with:
 
 Configured a **Drive Maps** preference to map the `F:` drive to `\\FinanceServer\folder` for affected users.
 
-![Drive Mapping GPO pointing F: to \\FinanceServer\folder](screenshots/16-drive-mapping-gpo.png)
+![Drive Mapping GPO pointing F: to \\FinanceServer\folder](Images/drivemap_GPO.png)
 
 ### GPO 3 — Restrict Control Panel Access
 
-Enabled **"Prohibit access to Control Panel and PC settings"** under User Configuration → Administrative Templates → Control Panel, which removes Control Panel and PC settings access from the Start screen, File Explorer, Settings charm, and search results.
+Enabled **"Prohibit access to Control Panel and PC settings"** under User Configuration → Administrative Templates → Control Panel, which removes Control Panel and PC settings access from the Start screen, File Explorer, Settings charm, and search results. This is very useful for user security especially if the new user could be a potential threat actor.
 
-![Restrict Control Panel GPO enabled](screenshots/17-restrict-control-panel-gpo.png)
+![Restrict Control Panel GPO enabled](Images/restrict_control_panel_gpo.png)
 
 ### GPO 4 — Disable USB Storage (practice)
 
-For additional practice, enabled **"All Removable Storage classes: Deny all access"** to block USB flash drives and other removable storage.
+For additional practice, enabled **"All Removable Storage classes: Deny all access"** to block USB flash drives and other removable storage. Helpful for preventing malware on USB drives.
 
-![USB Prevention GPO — all removable storage denied](screenshots/18-usb-prevention-gpo.png)
+![USB Prevention GPO — all removable storage denied](Images/prevent_removablestorage_GPO.png)
 
 ---
 
@@ -182,11 +172,11 @@ For additional practice, enabled **"All Removable Storage classes: Deny all acce
    - *Why:* Active Directory relies on DNS to resolve and communicate with domain-joined clients — a static IP on the DC keeps that resolution consistent.
 4. **Verified connectivity** by pinging the domain controller from the client:
 
-![Successful ping from client to domain controller](screenshots/19-ping-domain-controller.png)
+![Successful ping from client to domain controller](Images/ping_server_from_client.png)
 
-5. **Joined the client to the domain** via System Properties → Computer Name/Domain Changes, setting the domain to `Ryan.local`.
+5. **Joined the client to the domain** via System Properties → Computer Name/Domain Changes, setting the domain to `Ryan.local` and the computer name  to Bob01.
 
-![Joining the Windows 11 client to the Ryan.local domain](screenshots/20-domain-join.png)
+![Joining the Windows 11 client to the Ryan.local domain](Images/adding_PC_To_Domain.png)
 
 ---
 
@@ -207,3 +197,16 @@ Lab steps followed along with the [East Charmer](https://www.youtube.com/watch?v
 
 ## Troubleshooting
 
+I ran into a **problem** while doing the lab. I wanted to add a specific wallpaper for the users. I went to the internet on the windows server virtual machine and I realized I couldn't use Microsoft Edge's search. 
+
+### Possible Reasons for Connectivity Issues
+- I set the virtual machines network incorrectly
+- A preset firewall settings
+
+After checking both of the options I realized it had nothing to do with the firewall or the VM network settings.
+
+![Running the troubleshooter](Images/running_troubleshooter.png)
+
+I ran the troubleshooter and discovered that it the issue had the do with the DNS server. Apparently Domain controller need a DNS resolver to be set up for the internet to discover unknown IP addresses. I had to go to DNS manager and add a port forwarder using google's 8.8.8.8 server to fix the issue. 
+
+![Port Forwarder](Images/adding_port_forwarder.png)
