@@ -46,15 +46,15 @@ Set up an AD domain from scratch:
 
 **2. Installed the Active Directory Domain Services role**, plus Remote Access (added for future lab projects).
 
-![Selecting the AD DS server role](Projects\Active-Directory-Creation-Lab\Images\Adding_AD_Start.png)
+![Selecting the AD DS server role](Images\Adding_AD_Start.png)
 
 **3. Ran the Add Roles and Features Wizard**, then used the post-install notification to promote the server to a domain controller.
 
-![Installation progress with the "promote this server" link](Projects\Active-Directory-Creation-Lab\Images\promoting_server_DC.png)
+![Installation progress with the "promote this server" link](Images\promoting_server_DC.png)
 
 **4. Created a new forest** to house the domain and its organizational units, naming the root domain `Ryan.local`.
 
-![AD DS Configuration Wizard — Deployment Configuration, adding a new forest](Projects\Active-Directory-Creation-Lab\Images\Making_forest.png)
+![AD DS Configuration Wizard — Deployment Configuration, adding a new forest](Images\Making_forest.png)
 
 **5. Verified the install** via the Windows Administrative Tools menu, confirming Active Directory Users and Computers, Sites and Services, Domains and Trusts, etc. were all present.
 
