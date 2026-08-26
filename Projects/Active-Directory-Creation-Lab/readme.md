@@ -42,7 +42,7 @@ Set up an AD domain from scratch:
 
 **1. Downloaded the Windows Server 2022 ISO** and created a new virtual machine with it. On first login, Server Manager opened automatically.
 
-![Server Manager dashboard, opening Add Roles and Features]()
+![Server Manager dashboard, opening Add Roles and Features](Projects/Active-Directory-Creation-Lab/Images/Adding_AD_Start.png)
 
 **2. Installed the Active Directory Domain Services role**, plus Remote Access (added for future lab projects).
 
