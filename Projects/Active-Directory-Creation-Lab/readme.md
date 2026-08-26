@@ -46,7 +46,7 @@ Set up an AD domain from scratch:
 
 **2. Installed the Active Directory Domain Services role**, plus Remote Access (added for future lab projects).
 
-![Selecting the AD DS server role](Images\Adding_AD_Start.png)
+![Selecting the AD DS server role](Images/Adding_Domain_Services.png)
 
 **3. Ran the Add Roles and Features Wizard**, then used the post-install notification to promote the server to a domain controller.
 
